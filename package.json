@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "import-data": "python3 scripts/parse_pdfs.py --src .. --out public/data/questions.json"
+    "import-data": "python3 scripts/parse_pdfs.py --src ../pdfs-ocf --out public/data/questions.json"
   },
   "dependencies": {
     "react": "^18.3.1",

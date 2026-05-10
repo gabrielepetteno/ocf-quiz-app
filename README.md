@@ -99,7 +99,7 @@ npm install
 
 ### 3. Importa il dataset domande
 
-Lo script Python legge i PDF della cartella sorgente (default: `..` ovvero la cartella padre del repo) e produce `public/data/questions.json`:
+Lo script Python legge i PDF dalla cartella sorgente (default: `../pdfs-ocf`, cioè la sotto-cartella sorella `pdfs-ocf/` del workspace) e produce `public/data/questions.json`:
 
 ```bash
 npm run import-data
