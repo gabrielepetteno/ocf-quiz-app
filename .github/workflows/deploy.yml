@@ -50,9 +50,11 @@ jobs:
           VITE_BASE_PATH: /ocf-quiz-app/
 
       - name: Configure Pages
-        # Questa action abilita Pages la prima volta in modo idempotente
-        # (non c'è bisogno di toccare le impostazioni della repo a mano).
+        # `enablement: true` abilita Pages se non è già attivo, evitando
+        # di dover toccare le impostazioni della repo a mano. Idempotente.
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
