@@ -1,0 +1,72 @@
+name: Deploy to GitHub Pages
+
+# -----------------------------------------------------------------------------
+# Costruisce l'app Vite e la pubblica gratuitamente su GitHub Pages.
+# Si attiva automaticamente:
+#   - ad ogni push su `main`
+#   - manualmente da Actions → "Run workflow"
+# Il primo run abilita Pages se non è già attivo (configure-pages lo fa).
+# -----------------------------------------------------------------------------
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Permessi minimi necessari per pubblicare su Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Solo un deploy alla volta: se ne arriva uno nuovo, cancella quelli in coda.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        # `npm ci` è più veloce e riproducibile di `npm install` per la CI.
+        run: npm ci
+
+      - name: Build
+        # `base` è già configurato in vite.config.ts ma lo rendiamo
+        # esplicito per chiarezza (e per consentire override futuri).
+        run: npm run build
+        env:
+          VITE_BASE_PATH: /ocf-quiz-app/
+
+      - name: Configure Pages
+        # Questa action abilita Pages la prima volta in modo idempotente
+        # (non c'è bisogno di toccare le impostazioni della repo a mano).
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

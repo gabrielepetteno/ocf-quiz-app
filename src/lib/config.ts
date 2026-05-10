@@ -63,8 +63,14 @@ export const ERROR_RESOLVE_THRESHOLD = 2;
 /** Numero massimo di sessioni storiche conservate in localStorage. */
 export const HISTORY_LIMIT = 200;
 
-/** Path al manifest dei dati. Servito da public/data/. */
-export const QUESTIONS_DATA_URL = "/data/questions.json";
+/**
+ * Path al manifest dei dati. Servito da public/data/.
+ * Usa import.meta.env.BASE_URL per rispettare il `base` configurato in
+ * Vite: in dev è "/", in build di produzione è "/ocf-quiz-app/" (per
+ * GitHub Pages). In questo modo il fetch funziona sia su localhost che
+ * sul sito pubblicato.
+ */
+export const QUESTIONS_DATA_URL = `${import.meta.env.BASE_URL}data/questions.json`;
 
 /** Numeri di domande proposti nella pratica per categoria. */
 export const PRACTICE_SIZE_OPTIONS = [10, 20, 30, 50, "all"] as const;

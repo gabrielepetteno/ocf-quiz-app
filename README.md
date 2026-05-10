@@ -3,6 +3,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![Stato](https://img.shields.io/badge/stato-beta-orange.svg)
 ![Stack](https://img.shields.io/badge/stack-React%20%2B%20Vite%20%2B%20TypeScript%20%2B%20Tailwind-1d4ed8.svg)
+[![Deploy](https://github.com/gabrielepetteno/ocf-quiz-app/actions/workflows/deploy.yml/badge.svg)](https://github.com/gabrielepetteno/ocf-quiz-app/actions/workflows/deploy.yml)
+
+> 🌐 **Provala subito:** <https://gabrielepetteno.github.io/ocf-quiz-app/>
+> Hosting gratuito su GitHub Pages, nessuna installazione, nessuna registrazione.
 
 Simulatore **gratuito e open source** dell'esame OCF per l'iscrizione all'**Albo unico dei Consulenti Finanziari**.
 60 domande in 85 minuti con la stessa proporzione dell'esame ufficiale, **oltre 4.900 quesiti** importati dal materiale OCF, statistiche personali, ripasso mirato degli errori. **Nessun account, nessun server, nessun tracciamento.**
