@@ -1,16 +1,8 @@
 /**
  * Player principale del quiz.
  *
- * Gestisce:
- *  - rendering domanda corrente con risposte mescolate,
- *  - selezione, "flag da rivedere", navigazione avanti/indietro,
- *  - mappa di overview (jump rapido a una qualsiasi domanda),
- *  - timer opzionale,
- *  - conferma di consegna.
- *
- * Il componente è "controllato" dall'esterno: lo stato live (states) è
- * passato dal parent così che a fine sessione il parent possa salvare
- * tutto in un colpo (storia, errori, statistiche).
+ * Editorial layout: question on the left in a paper card, navigation
+ * map on the right. Sticky toolbar at top with category/timer/progress.
  */
 import { useMemo, useState } from "react";
 import type { PreparedQuestion, QuestionState } from "@/lib/types";
@@ -22,11 +14,8 @@ export interface QuizPlayerProps {
   questions: PreparedQuestion[];
   states: QuestionState[];
   startedAt: number;
-  /** Limite di tempo in secondi. null = nessun limite. */
   durationSec: number | null;
-  /** Etichetta della modalità (mostrata nell'header del quiz). */
   modeLabel: string;
-  /** Mostra a quale categoria appartiene la domanda (utile in simulazione). */
   showCategoryChip?: boolean;
   onStateChange: (idx: number, state: QuestionState) => void;
   onSubmit: () => void;
@@ -48,7 +37,6 @@ export default function QuizPlayer({
   const current = questions[currentIdx];
   const currentState = states[currentIdx];
 
-  // Statistiche live per il pannello "Mappa domande"
   const summary = useMemo(() => {
     let answered = 0;
     let flagged = 0;
@@ -74,14 +62,14 @@ export default function QuizPlayer({
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+    <div className="grid gap-6 lg:grid-cols-[1fr_300px]">
       {/* COLONNA SINISTRA: domanda corrente */}
-      <section className="flex flex-col gap-4">
-        {/* Header sticky con modalità + timer + progress */}
-        <div className="sticky top-[60px] z-20 -mx-4 bg-slate-50/90 px-4 py-3 backdrop-blur md:mx-0 md:rounded-2xl md:border md:border-slate-200 md:bg-white">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="chip">{modeLabel}</span>
+      <section className="flex flex-col gap-5">
+        {/* Header sticky */}
+        <div className="sticky top-[68px] z-20 -mx-4 border-y border-line-soft bg-[var(--bg)]/95 px-4 py-3 backdrop-blur md:mx-0 md:rounded-md md:border md:px-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="chip chip-accent">{modeLabel}</span>
               {showCategoryChip && (
                 <span className="chip">
                   {CATEGORY_SHORT_LABELS[current.category]}
@@ -91,9 +79,7 @@ export default function QuizPlayer({
                 {current.points} {current.points === 1 ? "punto" : "punti"}
               </span>
               {current.type === "pratica" && (
-                <span className="chip bg-violet-50 text-violet-700 border-violet-200">
-                  Pratica
-                </span>
+                <span className="chip chip-warn">Pratica</span>
               )}
             </div>
             {durationSec != null && (
@@ -104,19 +90,21 @@ export default function QuizPlayer({
               />
             )}
           </div>
-          <div className="mt-2">
+          <div className="mt-3">
             <Progress current={currentIdx + 1} total={questions.length} />
           </div>
         </div>
 
         {/* Card domanda */}
-        <article className="card">
-          <p className="text-sm text-slate-500">Domanda {currentIdx + 1}</p>
-          <h2 className="mt-1 text-lg font-medium leading-relaxed text-slate-900">
+        <article className="card flex flex-col">
+          <p className="mono text-xs uppercase tracking-eyebrow text-muted">
+            Domanda {currentIdx + 1} di {questions.length}
+          </p>
+          <h2 className="font-display mt-2 text-xl font-medium leading-snug text-ink md:text-2xl">
             {current.question}
           </h2>
 
-          <ul className="mt-5 space-y-2">
+          <ul className="mt-7 space-y-2.5">
             {current.displayAnswers.map((a, idx) => {
               const isSelected = currentState.selectedAnswerId === a.id;
               const displayLabel = String.fromCharCode(65 + idx);
@@ -125,37 +113,41 @@ export default function QuizPlayer({
                   <button
                     type="button"
                     className={
-                      isSelected ? "answer-selected" : "answer-neutral"
+                      isSelected
+                        ? "answer-row answer-selected"
+                        : "answer-row answer-neutral"
                     }
                     onClick={() => selectAnswer(a.id)}
+                    aria-pressed={isSelected}
                   >
-                    <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-current text-xs font-semibold">
-                      {displayLabel}
-                    </span>
-                    <span className="flex-1">{a.text}</span>
+                    <span className="answer-letter">{displayLabel}</span>
+                    <span className="flex-1 leading-relaxed">{a.text}</span>
                   </button>
                 </li>
               );
             })}
           </ul>
 
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
-            <div className="flex items-center gap-2">
+          <div className="mt-7 flex flex-wrap items-center justify-between gap-3 border-t border-line-soft pt-5">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 className={
                   currentState.flagged
-                    ? "btn bg-amber-100 text-amber-800 border border-amber-300"
-                    : "btn-secondary"
+                    ? "btn border-[var(--warn)] bg-[var(--warn-soft)] text-[var(--warn)]"
+                    : "btn btn-secondary"
                 }
                 onClick={toggleFlag}
                 aria-pressed={currentState.flagged}
               >
-                {currentState.flagged ? "★ Da rivedere" : "☆ Segna da rivedere"}
+                <span aria-hidden="true">
+                  {currentState.flagged ? "★" : "☆"}
+                </span>
+                {currentState.flagged ? "Da rivedere" : "Segna da rivedere"}
               </button>
               <button
                 type="button"
-                className="btn-ghost"
+                className="btn btn-ghost"
                 onClick={() => selectAnswer(null)}
                 disabled={currentState.selectedAnswerId == null}
               >
@@ -166,7 +158,7 @@ export default function QuizPlayer({
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="btn-secondary"
+                className="btn btn-secondary"
                 onClick={() => setCurrentIdx((i) => Math.max(0, i - 1))}
                 disabled={currentIdx === 0}
               >
@@ -175,7 +167,7 @@ export default function QuizPlayer({
               {currentIdx === questions.length - 1 ? (
                 <button
                   type="button"
-                  className="btn-primary"
+                  className="btn btn-primary"
                   onClick={() => setConfirmOpen(true)}
                 >
                   Consegna
@@ -183,7 +175,7 @@ export default function QuizPlayer({
               ) : (
                 <button
                   type="button"
-                  className="btn-primary"
+                  className="btn btn-primary"
                   onClick={() =>
                     setCurrentIdx((i) => Math.min(questions.length - 1, i + 1))
                   }
@@ -198,7 +190,7 @@ export default function QuizPlayer({
         <div className="flex justify-center">
           <button
             type="button"
-            className="btn-ghost text-rose-700 hover:bg-rose-50"
+            className="btn btn-ghost text-[var(--danger)] hover:bg-[var(--danger-soft)] hover:text-[var(--danger)]"
             onClick={() => setConfirmOpen(true)}
           >
             Termina e consegna ora
@@ -206,45 +198,59 @@ export default function QuizPlayer({
         </div>
       </section>
 
-      {/* COLONNA DESTRA: mappa domande + summary */}
-      <aside className="card lg:sticky lg:top-[60px] lg:self-start">
-        <h3 className="text-sm font-semibold text-slate-700">Mappa domande</h3>
-        <div className="mt-2 grid grid-cols-2 gap-2 text-xs text-slate-600">
-          <span>
-            <span className="inline-block h-2 w-2 rounded-full bg-brand-500" />{" "}
-            Risposte: <strong>{summary.answered}</strong>
-          </span>
-          <span>
-            <span className="inline-block h-2 w-2 rounded-full bg-amber-400" />{" "}
-            Da rivedere: <strong>{summary.flagged}</strong>
-          </span>
-          <span className="col-span-2">
-            <span className="inline-block h-2 w-2 rounded-full bg-slate-300" />{" "}
-            Mancanti: <strong>{summary.unanswered}</strong>
-          </span>
-        </div>
+      {/* COLONNA DESTRA: mappa domande */}
+      <aside className="card card-paper flex flex-col gap-4 lg:sticky lg:top-[68px] lg:self-start">
+        <header>
+          <p className="eyebrow">Mappa domande</p>
+        </header>
+
+        <ul className="grid grid-cols-2 gap-2 text-xs">
+          <li className="flex items-center gap-2 text-ink-soft">
+            <span className="inline-block h-2 w-2 rounded-full bg-ink" />
+            <span>
+              Risposte: <strong className="text-ink">{summary.answered}</strong>
+            </span>
+          </li>
+          <li className="flex items-center gap-2 text-ink-soft">
+            <span className="inline-block h-2 w-2 rounded-full bg-[var(--warn)]" />
+            <span>
+              Da rivedere:{" "}
+              <strong className="text-ink">{summary.flagged}</strong>
+            </span>
+          </li>
+          <li className="col-span-2 flex items-center gap-2 text-ink-soft">
+            <span className="inline-block h-2 w-2 rounded-full bg-[var(--line-paper)]" />
+            <span>
+              Mancanti:{" "}
+              <strong className="text-ink">{summary.unanswered}</strong>
+            </span>
+          </li>
+        </ul>
 
         <div
-          className="mt-4 grid gap-1.5"
+          className="grid gap-1.5"
           style={{ gridTemplateColumns: "repeat(8, minmax(0, 1fr))" }}
         >
           {questions.map((_, i) => {
             const s = states[i];
+            const base =
+              "mono flex h-8 items-center justify-center rounded-sm text-[0.7rem] font-medium transition-colors";
             const cls =
               i === currentIdx
-                ? "ring-2 ring-brand-500 bg-white"
+                ? `${base} bg-ink text-[var(--bg)] ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--bg-paper)]`
                 : s.flagged
-                  ? "bg-amber-300 text-amber-900"
+                  ? `${base} bg-[var(--warn-soft)] text-[var(--warn)] border border-[var(--warn)]`
                   : s.selectedAnswerId != null
-                    ? "bg-brand-500 text-white"
-                    : "bg-slate-200 text-slate-700";
+                    ? `${base} bg-ink text-[var(--bg)]`
+                    : `${base} border border-[var(--line-paper)] bg-[var(--bg-elevated)] text-ink-soft hover:border-ink`;
             return (
               <button
                 key={i}
                 type="button"
                 onClick={() => setCurrentIdx(i)}
-                className={`flex h-8 items-center justify-center rounded-md text-xs font-medium transition ${cls}`}
+                className={cls}
                 aria-label={`Vai alla domanda ${i + 1}`}
+                aria-current={i === currentIdx ? "true" : undefined}
                 title={`Domanda ${i + 1}`}
               >
                 {i + 1}
@@ -255,7 +261,7 @@ export default function QuizPlayer({
 
         <button
           type="button"
-          className="btn-primary mt-5 w-full"
+          className="btn btn-primary w-full"
           onClick={() => setConfirmOpen(true)}
         >
           Consegna quiz
@@ -265,17 +271,23 @@ export default function QuizPlayer({
       {/* MODALE CONFERMA CONSEGNA */}
       {confirmOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(26,23,21,0.55)] p-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
+          aria-labelledby="confirm-title"
         >
           <div className="card w-full max-w-md">
-            <h3 className="text-lg font-semibold text-slate-900">
+            <p className="eyebrow">Conferma</p>
+            <h3
+              id="confirm-title"
+              className="font-display mt-2 text-2xl font-medium text-ink"
+            >
               Consegnare il quiz?
             </h3>
-            <p className="mt-2 text-sm text-slate-600">
-              Hai risposto a <strong>{summary.answered}</strong> domande su{" "}
-              {questions.length}.
+            <p className="mt-3 text-sm text-ink-soft">
+              Hai risposto a{" "}
+              <strong className="text-ink">{summary.answered}</strong> domande
+              su {questions.length}.
               {summary.unanswered > 0 && (
                 <>
                   {" "}
@@ -284,17 +296,18 @@ export default function QuizPlayer({
                 </>
               )}
             </p>
-            <div className="mt-5 flex justify-end gap-2">
+            <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                className="btn-secondary"
+                className="btn btn-secondary"
                 onClick={() => setConfirmOpen(false)}
+                autoFocus
               >
                 Annulla
               </button>
               <button
                 type="button"
-                className="btn-primary"
+                className="btn btn-primary"
                 onClick={() => {
                   setConfirmOpen(false);
                   onSubmit();

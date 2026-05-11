@@ -1,8 +1,7 @@
 /**
  * Pagina "Storico".
  *
- * Mostra l'elenco delle sessioni completate (esame + pratica + ripasso),
- * un mini-grafico dei progressi e la performance media per categoria.
+ * Editorial style: oversize numerals, hairline rule sparkline.
  */
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -51,93 +50,125 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex flex-col gap-10">
+      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Storico</h1>
-          <p className="mt-1 text-slate-600">
-            Tutte le sessioni che hai completato, salvate sul tuo dispositivo.
+          <p className="eyebrow">Le tue sessioni</p>
+          <h1 className="display-2 mt-3">A che punto sei.</h1>
+          <p className="mt-3 max-w-prose text-ink-soft">
+            Tutte le sessioni completate, salvate sul tuo dispositivo. Niente
+            sale sui nostri server.
           </p>
         </div>
         {history.length > 0 && (
-          <button type="button" className="btn-secondary" onClick={reset}>
+          <button type="button" className="btn btn-secondary" onClick={reset}>
             Svuota storico
           </button>
         )}
       </header>
 
       {history.length === 0 ? (
-        <div className="card text-center text-slate-600">
-          <p>Non hai ancora completato nessun quiz.</p>
-          <Link to="/exam" className="btn-primary mt-4 inline-flex">
+        <div className="card flex flex-col items-center gap-4 py-12 text-center">
+          <p className="font-display text-xl text-ink">
+            Nessuna sessione ancora.
+          </p>
+          <p className="max-w-prose text-sm text-ink-soft">
+            Quando finirai un quiz, comparirà qui con punteggio, tempo e
+            categoria.
+          </p>
+          <Link to="/exam" className="btn btn-primary mt-2">
             Inizia una simulazione
+            <span aria-hidden="true">→</span>
           </Link>
         </div>
       ) : (
         <>
           {/* Statistiche aggregate */}
-          <section className="grid gap-3 md:grid-cols-4">
-            <Stat label="Totale sessioni" value={String(stats.totalSessions)} />
+          <section
+            aria-label="Statistiche aggregate"
+            className="grid gap-px bg-line-soft md:grid-cols-4"
+          >
+            <Stat label="Sessioni" value={String(stats.totalSessions)} />
             <Stat label="Simulazioni" value={String(stats.examSessions)} />
-            <Stat label="Punteggio medio" value={`${stats.averageScore}/100`} />
+            <Stat label="Media" value={`${stats.averageScore}/100`} />
             <Stat
               label="Tasso di successo"
               value={formatPercent(stats.successRate)}
             />
           </section>
 
-          {/* Mini-grafico (sparkline) */}
+          {/* Mini-grafico */}
           <ScoreChart history={history} />
 
           {/* Tabella sessioni */}
-          <section className="card overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th className="px-2 py-2">Data</th>
-                  <th className="px-2 py-2">Modalità</th>
-                  <th className="px-2 py-2 text-right">Punteggio</th>
-                  <th className="px-2 py-2 text-right">Corrette</th>
-                  <th className="px-2 py-2 text-right">Tempo</th>
-                  <th className="px-2 py-2 text-right">Esito</th>
+          <section
+            className="section-rule overflow-x-auto"
+            aria-labelledby="dettaglio-sessioni"
+          >
+            <p className="eyebrow">Dettaglio sessioni</p>
+            <h2 id="dettaglio-sessioni" className="sr-only">
+              Dettaglio sessioni
+            </h2>
+            <table className="mt-4 w-full text-sm">
+              <thead>
+                <tr className="border-b border-line text-left">
+                  <th className="mono px-2 py-3 text-[0.7rem] font-medium uppercase tracking-eyebrow text-muted">
+                    Data
+                  </th>
+                  <th className="mono px-2 py-3 text-[0.7rem] font-medium uppercase tracking-eyebrow text-muted">
+                    Modalità
+                  </th>
+                  <th className="mono px-2 py-3 text-right text-[0.7rem] font-medium uppercase tracking-eyebrow text-muted">
+                    Punteggio
+                  </th>
+                  <th className="mono px-2 py-3 text-right text-[0.7rem] font-medium uppercase tracking-eyebrow text-muted">
+                    Corrette
+                  </th>
+                  <th className="mono px-2 py-3 text-right text-[0.7rem] font-medium uppercase tracking-eyebrow text-muted">
+                    Tempo
+                  </th>
+                  <th className="mono px-2 py-3 text-right text-[0.7rem] font-medium uppercase tracking-eyebrow text-muted">
+                    Esito
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {history.map((h) => (
-                  <tr key={h.sessionId} className="border-t border-slate-100">
-                    <td className="px-2 py-2 text-slate-700">
+                  <tr
+                    key={h.sessionId}
+                    className="border-b border-line-soft last:border-0"
+                  >
+                    <td className="px-2 py-3 text-ink">
                       {formatDateTime(h.startedAt)}
                     </td>
-                    <td className="px-2 py-2 text-slate-700">
+                    <td className="px-2 py-3 text-ink">
                       {MODE_LABELS[h.mode]}
                       {h.category && (
-                        <span className="ml-1 text-slate-400">
+                        <span className="ml-1 text-muted">
                           · {CATEGORY_SHORT_LABELS[h.category]}
                         </span>
                       )}
                     </td>
-                    <td className="px-2 py-2 text-right tabular-nums">
+                    <td className="mono px-2 py-3 text-right text-ink tabular-nums">
                       {h.scaledScore}/100
                     </td>
-                    <td className="px-2 py-2 text-right tabular-nums">
+                    <td className="mono px-2 py-3 text-right text-ink tabular-nums">
                       {h.correctCount}/{h.totalQuestions}
                     </td>
-                    <td className="px-2 py-2 text-right tabular-nums text-slate-600">
+                    <td className="mono px-2 py-3 text-right tabular-nums text-muted">
                       {formatDuration(h.elapsedSec)}
                     </td>
-                    <td className="px-2 py-2 text-right">
+                    <td className="px-2 py-3 text-right">
                       {h.mode === "exam" ? (
                         <span
-                          className={`chip ${
-                            h.passed
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                              : "bg-rose-50 text-rose-700 border-rose-200"
-                          }`}
+                          className={
+                            h.passed ? "chip chip-success" : "chip chip-danger"
+                          }
                         >
                           {h.passed ? "Promosso" : "Non promosso"}
                         </span>
                       ) : (
-                        <span className="text-slate-400">—</span>
+                        <span className="text-muted">—</span>
                       )}
                     </td>
                   </tr>
@@ -148,40 +179,39 @@ export default function HistoryPage() {
 
           {/* Performance per categoria */}
           {stats.perCategory.length > 0 && (
-            <section className="card">
-              <h3 className="text-base font-semibold text-slate-900">
-                Performance per categoria
-              </h3>
-              <p className="mt-1 text-sm text-slate-500">
+            <section className="section-rule">
+              <p className="eyebrow">Performance per categoria</p>
+              <p className="mt-2 text-sm text-muted">
                 Calcolata sull'intera storia. Le prime sono quelle dove conviene
                 investire più ripasso.
               </p>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-5 space-y-4">
                 {stats.perCategory.map((c) => (
                   <li key={c.category}>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-700">
+                    <div className="flex items-baseline justify-between gap-3 text-sm">
+                      <span className="font-medium text-ink">
                         {CATEGORY_SHORT_LABELS[c.category]}
                       </span>
-                      <span className="tabular-nums text-slate-500">
-                        {formatPercent(c.accuracy)}{" "}
-                        <span className="text-slate-400">
-                          ({c.samples} risposte)
-                        </span>
+                      <span className="mono tabular-nums text-muted">
+                        {formatPercent(c.accuracy)} · {c.samples} risposte
                       </span>
                     </div>
-                    <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-200">
+                    <div
+                      className="mt-2 h-[3px] overflow-hidden bg-[var(--line-soft)]"
+                      role="progressbar"
+                      aria-valuenow={Math.round(c.accuracy * 100)}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                    >
                       <div
-                        className={`h-full rounded-full ${
+                        className={
                           c.accuracy >= 0.8
-                            ? "bg-emerald-500"
+                            ? "h-full bg-[var(--success)] transition-[width]"
                             : c.accuracy >= 0.6
-                              ? "bg-amber-400"
-                              : "bg-rose-500"
-                        }`}
-                        style={{
-                          width: `${Math.round(c.accuracy * 100)}%`,
-                        }}
+                              ? "h-full bg-[var(--warn)] transition-[width]"
+                              : "h-full bg-[var(--danger)] transition-[width]"
+                        }
+                        style={{ width: `${Math.round(c.accuracy * 100)}%` }}
                       />
                     </div>
                   </li>
@@ -197,22 +227,22 @@ export default function HistoryPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="stat-tile">
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+    <div className="bg-[var(--bg)] px-5 py-5">
+      <p className="mono text-[0.7rem] uppercase tracking-eyebrow text-muted">
         {label}
       </p>
-      <p className="text-2xl font-bold tabular-nums text-slate-900">{value}</p>
+      <p className="mono mt-3 text-3xl font-semibold leading-none tabular-nums text-ink">
+        {value}
+      </p>
     </div>
   );
 }
 
 /**
- * Mini-grafico dei punteggi nel tempo: sparkline SVG semplice senza
- * dipendenze esterne. Mostra le ultime 30 sessioni dalla più vecchia
- * alla più recente.
+ * Sparkline editorial: hairline + ink path + crimson points for passes,
+ * muted for fails. Threshold as dashed rule.
  */
 function ScoreChart({ history }: { history: SessionResult[] }) {
-  // Ordine cronologico, ultimi 30
   const series = history
     .slice()
     .sort((a, b) => a.startedAt - b.startedAt)
@@ -220,8 +250,8 @@ function ScoreChart({ history }: { history: SessionResult[] }) {
   if (series.length < 2) return null;
 
   const W = 600;
-  const H = 120;
-  const PAD = 8;
+  const H = 140;
+  const PAD = 12;
   const innerW = W - PAD * 2;
   const innerH = H - PAD * 2;
 
@@ -231,40 +261,45 @@ function ScoreChart({ history }: { history: SessionResult[] }) {
   const path = xs
     .map((x, i) => `${i === 0 ? "M" : "L"} ${x.toFixed(1)} ${ys[i].toFixed(1)}`)
     .join(" ");
-  // Soglia di superamento (linea tratteggiata)
   const yPass = PAD + (1 - EXAM_PASS_THRESHOLD / 100) * innerH;
 
   return (
-    <section className="card">
-      <h3 className="text-base font-semibold text-slate-900">
-        Andamento punteggio
-      </h3>
-      <p className="mt-1 text-sm text-slate-500">
-        Ultime {series.length} sessioni. Linea tratteggiata = soglia{" "}
-        {EXAM_PASS_THRESHOLD}/100.
+    <section className="section-rule" aria-labelledby="andamento">
+      <p className="eyebrow">Andamento punteggio</p>
+      <h2 id="andamento" className="font-display mt-3 text-xl text-ink">
+        Ultime {series.length} sessioni
+      </h2>
+      <p className="mt-1 text-sm text-muted">
+        Linea tratteggiata = soglia {EXAM_PASS_THRESHOLD}/100
       </p>
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="mt-2 h-32 w-full"
+        className="mt-4 h-36 w-full"
         preserveAspectRatio="none"
         aria-label="Grafico punteggi nel tempo"
+        role="img"
       >
+        {/* Threshold */}
         <line
           x1={PAD}
           x2={W - PAD}
           y1={yPass}
           y2={yPass}
-          stroke="#94a3b8"
-          strokeDasharray="4 4"
+          stroke="var(--line)"
+          strokeWidth={1}
+          strokeDasharray="3 4"
+          opacity={0.4}
         />
-        <path d={path} fill="none" stroke="#2563eb" strokeWidth={2} />
+        {/* Path */}
+        <path d={path} fill="none" stroke="var(--ink)" strokeWidth={1.5} />
+        {/* Points */}
         {xs.map((x, i) => (
           <circle
             key={i}
             cx={x}
             cy={ys[i]}
-            r={3}
-            fill={series[i].passed ? "#10b981" : "#f43f5e"}
+            r={3.5}
+            fill={series[i].passed ? "var(--success)" : "var(--danger)"}
           />
         ))}
       </svg>

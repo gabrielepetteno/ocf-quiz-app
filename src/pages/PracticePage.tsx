@@ -1,10 +1,6 @@
 /**
  * Pagina di selezione "pratica per categoria".
- * L'utente sceglie:
- *  - categoria (5 opzioni),
- *  - numero domande (10/20/30/50/all),
- *  - timer opzionale (in minuti).
- * Poi naviga a /practice/:category con i parametri come query string.
+ * Editorial three-step picker: categoria → numero → timer.
  */
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,7 +16,7 @@ export default function PracticePage() {
   const [categories, setCategories] = useState<CategoryMeta[]>([]);
   const [chosen, setChosen] = useState<CategoryKey | null>(null);
   const [count, setCount] = useState<number | "all">(20);
-  const [timerMin, setTimerMin] = useState<number>(0); // 0 = nessun timer
+  const [timerMin, setTimerMin] = useState<number>(0);
 
   const seo = getPageSeo("practice")!;
   useDocumentMeta({
@@ -44,23 +40,20 @@ export default function PracticePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-12">
       <header>
-        <h1 className="text-2xl font-bold text-slate-900">
-          Pratica per categoria
-        </h1>
-        <p className="mt-1 text-slate-600">
+        <p className="eyebrow">Allenamento libero</p>
+        <h1 className="display-2 mt-3">Costruisci la tua sessione.</h1>
+        <p className="mt-3 max-w-prose text-ink-soft">
           Allenati su una macro-categoria specifica, senza vincoli di
           proporzione esame.
         </p>
       </header>
 
-      {/* Scelta categoria */}
-      <section>
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
-          1. Categoria
-        </h2>
-        <ul className="grid gap-3 md:grid-cols-2">
+      {/* 1. Categoria */}
+      <section className="section-rule">
+        <p className="eyebrow">Scegli la categoria</p>
+        <ul className="mt-6 grid gap-px bg-line-soft md:grid-cols-2">
           {categories.map((c) => {
             const isChosen = chosen === c.key;
             return (
@@ -68,19 +61,30 @@ export default function PracticePage() {
                 <button
                   type="button"
                   onClick={() => setChosen(c.key)}
-                  className={`w-full text-left card transition ${
+                  className={[
+                    "flex w-full items-center justify-between gap-4 bg-[var(--bg)] p-5 text-left transition-colors",
                     isChosen
-                      ? "ring-2 ring-brand-500 border-brand-300"
-                      : "hover:border-slate-300"
-                  }`}
+                      ? "bg-[var(--accent-tint)] outline outline-2 outline-[var(--accent)]"
+                      : "hover:bg-[var(--bg-paper)]",
+                  ].join(" ")}
                   aria-pressed={isChosen}
                 >
-                  <p className="font-medium text-slate-900">
-                    {CATEGORY_LABELS[c.key]}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500">
-                    {c.count.toLocaleString("it-IT")} domande disponibili
-                  </p>
+                  <div>
+                    <p className="font-display text-base font-medium text-ink">
+                      {CATEGORY_LABELS[c.key]}
+                    </p>
+                    <p className="mono mt-1 text-xs uppercase tracking-eyebrow text-muted">
+                      {c.count.toLocaleString("it-IT")} domande disponibili
+                    </p>
+                  </div>
+                  <span
+                    aria-hidden="true"
+                    className={
+                      isChosen ? "text-accent text-lg" : "text-muted text-lg"
+                    }
+                  >
+                    {isChosen ? "●" : "○"}
+                  </span>
                 </button>
               </li>
             );
@@ -88,12 +92,10 @@ export default function PracticePage() {
         </ul>
       </section>
 
-      {/* Scelta numero domande */}
-      <section>
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
-          2. Quante domande
-        </h2>
-        <div className="flex flex-wrap gap-2">
+      {/* 2. Numero domande */}
+      <section className="section-rule">
+        <p className="eyebrow">Quante domande</p>
+        <div className="mt-5 flex flex-wrap gap-2">
           {PRACTICE_SIZE_OPTIONS.map((opt) => {
             const label = opt === "all" ? "Tutte" : String(opt);
             const isOn =
@@ -105,7 +107,8 @@ export default function PracticePage() {
                 key={String(opt)}
                 type="button"
                 onClick={() => setCount(opt === "all" ? "all" : Number(opt))}
-                className={isOn ? "btn-primary" : "btn-secondary"}
+                className={isOn ? "btn btn-primary" : "btn btn-secondary"}
+                aria-pressed={isOn}
               >
                 {label}
               </button>
@@ -114,18 +117,19 @@ export default function PracticePage() {
         </div>
       </section>
 
-      {/* Timer opzionale */}
-      <section>
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500">
-          3. Timer (opzionale)
-        </h2>
-        <div className="flex flex-wrap items-center gap-2">
+      {/* 3. Timer */}
+      <section className="section-rule">
+        <p className="eyebrow">Timer (opzionale)</p>
+        <div className="mt-5 flex flex-wrap items-center gap-2">
           {[0, 5, 10, 15, 30, 60].map((m) => (
             <button
               key={m}
               type="button"
               onClick={() => setTimerMin(m)}
-              className={timerMin === m ? "btn-primary" : "btn-secondary"}
+              className={
+                timerMin === m ? "btn btn-primary" : "btn btn-secondary"
+              }
+              aria-pressed={timerMin === m}
             >
               {m === 0 ? "Senza timer" : `${m} min`}
             </button>
@@ -133,17 +137,18 @@ export default function PracticePage() {
         </div>
       </section>
 
-      <div className="flex flex-wrap items-center justify-end gap-2">
-        <Link to="/" className="btn-ghost">
+      <div className="flex flex-wrap items-center justify-end gap-2 border-t border-line-soft pt-6">
+        <Link to="/" className="btn btn-ghost">
           Annulla
         </Link>
         <button
           type="button"
-          className="btn-primary"
+          className="btn btn-primary btn-lg"
           disabled={!chosen}
           onClick={start}
         >
-          Inizia pratica →
+          Inizia pratica
+          <span aria-hidden="true">→</span>
         </button>
       </div>
     </div>

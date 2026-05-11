@@ -104,10 +104,14 @@ export default function ErrorsRunPage() {
 
   if (phase === "empty") {
     return (
-      <div className="card text-slate-600">
-        <p>Nessuna domanda da ripassare con questi parametri.</p>
-        <Link to="/errors" className="btn-primary mt-4 inline-flex">
+      <div className="card flex flex-col items-start gap-3">
+        <p className="eyebrow">Ripasso vuoto</p>
+        <p className="text-ink-soft">
+          Nessuna domanda da ripassare con questi parametri.
+        </p>
+        <Link to="/errors" className="btn btn-primary mt-2">
           Torna agli errori
+          <span aria-hidden="true">→</span>
         </Link>
       </div>
     );
@@ -115,7 +119,15 @@ export default function ErrorsRunPage() {
 
   if (phase === "loading" || !session) {
     return (
-      <div className="card text-slate-600">Sto preparando il ripasso…</div>
+      <div
+        className="card flex items-center gap-3 text-ink-soft"
+        aria-busy="true"
+      >
+        <span className="mono text-xs uppercase tracking-eyebrow text-muted">
+          Caricamento
+        </span>
+        <span>Sto preparando il ripasso…</span>
+      </div>
     );
   }
 

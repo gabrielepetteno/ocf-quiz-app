@@ -73,7 +73,10 @@ const FAQ: QA[] = [
         economia, 6 di diritto tributario, 6 di diritto previdenziale e
         assicurativo, 5 di diritto privato e commerciale. Maggiori dettagli
         sulla pagina{" "}
-        <Link to="/materie-esame-ocf" className="text-brand-700 underline">
+        <Link
+          to="/materie-esame-ocf"
+          className="text-accent underline underline-offset-4"
+        >
           materie esame OCF
         </Link>
         .
@@ -119,15 +122,18 @@ const FAQ: QA[] = [
     aNode: (
       <p>
         Con il <strong>simulatore OCF Quiz</strong> ti alleni gratis:{" "}
-        <Link to="/exam" className="text-brand-700 underline">
+        <Link to="/exam" className="text-accent underline underline-offset-4">
           simulazione esame
         </Link>{" "}
         a tempo,{" "}
-        <Link to="/practice" className="text-brand-700 underline">
+        <Link
+          to="/practice"
+          className="text-accent underline underline-offset-4"
+        >
           pratica per categoria
         </Link>
         ,{" "}
-        <Link to="/errors" className="text-brand-700 underline">
+        <Link to="/errors" className="text-accent underline underline-offset-4">
           ripasso errori
         </Link>{" "}
         e statistiche personali. App open source, nessuna registrazione, tutto
@@ -156,9 +162,9 @@ const FAQ: QA[] = [
     aNode: (
       <p>
         <strong>No.</strong> Tutto resta sul tuo dispositivo (
-        <code className="rounded bg-slate-100 px-1">localStorage</code>): nessun
-        account, nessun backend, nessun analytics. Cancellando i dati del
-        browser cancelli storico ed errori.
+        <code className="rounded bg-[var(--bg-paper)] px-1">localStorage</code>
+        ): nessun account, nessun backend, nessun analytics. Cancellando i dati
+        del browser cancelli storico ed errori.
       </p>
     ),
   },
@@ -201,67 +207,74 @@ export default function FaqPage() {
   });
 
   return (
-    <article className="space-y-8">
-      <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
-        <ol className="flex flex-wrap items-center gap-1">
+    <article className="flex flex-col gap-12">
+      <nav aria-label="Breadcrumb" className="text-sm">
+        <ol className="flex flex-wrap items-center gap-2 text-muted">
           <li>
-            <Link to="/" className="hover:text-slate-700 hover:underline">
+            <Link to="/" className="hover:text-accent">
               Home
             </Link>
           </li>
-          <li aria-hidden="true">›</li>
-          <li aria-current="page" className="text-slate-700">
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" className="text-ink">
             FAQ esame OCF
           </li>
         </ol>
       </nav>
 
-      <header className="space-y-3">
-        <span className="chip">FAQ · domande frequenti</span>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-          FAQ: domande frequenti sull'esame OCF
-        </h1>
-        <p className="max-w-3xl text-slate-600">
-          Risposte rapide alle domande più comuni sull'esame OCF: struttura,
-          durata, soglia, costo, materie, modalità di preparazione. Per una
-          panoramica completa parti dalla{" "}
-          <Link to="/guida-esame-ocf" className="text-brand-700 underline">
+      <header>
+        <p className="eyebrow">Domande frequenti</p>
+        <h1 className="display-1 mt-4">Risposte rapide sull'esame OCF.</h1>
+        <p className="mt-6 max-w-prose text-lg leading-relaxed text-ink-soft">
+          Le domande più comuni: struttura, durata, soglia, costo, materie,
+          modalità di preparazione. Per una panoramica completa parti dalla{" "}
+          <Link
+            to="/guida-esame-ocf"
+            className="text-accent underline underline-offset-4"
+          >
             guida all'esame OCF
           </Link>
           .
         </p>
       </header>
 
-      <section className="space-y-3">
-        {FAQ.map((item, idx) => (
-          <FaqItem
-            key={item.q}
-            question={item.q}
-            answer={item.aNode}
-            defaultOpen={idx === 0}
-          />
-        ))}
+      <section className="border-y border-line" aria-labelledby="faq-list">
+        <h2 id="faq-list" className="sr-only">
+          Elenco FAQ
+        </h2>
+        <ul className="divide-y divide-line-soft">
+          {FAQ.map((item, idx) => (
+            <FaqItem
+              key={item.q}
+              question={item.q}
+              answer={item.aNode}
+              defaultOpen={idx === 0}
+            />
+          ))}
+        </ul>
       </section>
 
-      <section className="card border-brand-200 bg-brand-50/50">
-        <h2 className="text-xl font-semibold text-slate-900">
+      <section className="card flex flex-col gap-3 border-ink bg-[var(--bg-paper)]">
+        <p className="eyebrow">Manca qualcosa?</p>
+        <h2 className="font-display text-2xl font-medium leading-tight text-ink">
           Hai un'altra domanda?
         </h2>
-        <p className="mt-1 text-slate-700">
+        <p className="text-ink-soft">
           OCF Quiz è un progetto open source: puoi suggerire nuove FAQ o
           contribuire al codice direttamente su GitHub.
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-2 flex flex-wrap gap-2">
           <a
             href="https://github.com/gabrielepetteno/ocf-quiz-app/issues"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-primary"
+            className="btn btn-primary"
           >
             Apri una issue su GitHub
+            <span aria-hidden="true">↗</span>
           </a>
-          <Link to="/exam" className="btn-secondary">
-            🎯 Inizia subito la simulazione
+          <Link to="/exam" className="btn btn-secondary">
+            Inizia subito la simulazione
           </Link>
         </div>
       </section>
@@ -280,23 +293,29 @@ function FaqItem({
 }) {
   const [open, setOpen] = useState(!!defaultOpen);
   return (
-    <details
-      className="card cursor-pointer marker:hidden"
-      open={open}
-      onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}
-    >
-      <summary className="flex items-center justify-between gap-3 text-left text-base font-semibold text-slate-900 outline-none">
-        <span>{question}</span>
-        <span
-          aria-hidden="true"
-          className={`ml-2 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition-transform ${
-            open ? "rotate-45" : ""
-          }`}
-        >
-          +
-        </span>
-      </summary>
-      <div className="mt-3 text-slate-700">{answer}</div>
-    </details>
+    <li>
+      <details
+        className="group cursor-pointer marker:hidden"
+        open={open}
+        onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}
+      >
+        <summary className="flex items-center justify-between gap-4 py-5 text-left outline-none">
+          <span className="font-display text-lg font-semibold leading-snug text-ink md:text-xl">
+            {question}
+          </span>
+          <span
+            aria-hidden="true"
+            className={`ml-2 shrink-0 text-2xl font-light leading-none text-ink transition-transform duration-300 ease-out ${
+              open ? "rotate-45" : ""
+            }`}
+          >
+            +
+          </span>
+        </summary>
+        <div className="prose-editorial pb-6 pl-0 text-ink-soft md:pl-12">
+          {answer}
+        </div>
+      </details>
+    </li>
   );
 }

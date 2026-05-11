@@ -183,75 +183,95 @@ function Intro({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-12">
       <header>
-        <h1 className="text-2xl font-bold text-slate-900">
-          Simulazione esame OCF
-        </h1>
-        <p className="mt-1 text-slate-600">
+        <p className="eyebrow">Modalità esame</p>
+        <h1 className="display-2 mt-3">Simulazione esame OCF.</h1>
+        <p className="mt-3 max-w-prose text-ink-soft">
           Riproduce le regole dell'esame ufficiale per l'iscrizione all'Albo
-          unico dei Consulenti Finanziari.
+          unico dei Consulenti Finanziari. Una volta avviata la simulazione, il
+          timer parte e non si ferma — tratta la prova come quella vera.
         </p>
       </header>
 
-      <section className="grid gap-4 md:grid-cols-3">
+      <section
+        aria-labelledby="regole"
+        className="grid gap-px bg-line-soft md:grid-cols-3"
+      >
+        <h2 id="regole" className="sr-only">
+          Regole della simulazione
+        </h2>
         <Box
-          title={`${EXAM_TOTAL_QUESTIONS} domande`}
+          big={`${EXAM_TOTAL_QUESTIONS}`}
+          unit="domande"
           body="Selezionate casualmente dal dataset, senza ripetizioni."
         />
         <Box
-          title={`${EXAM_DURATION_MIN} minuti`}
-          body="Timer sempre visibile in alto. Allo zero il quiz viene consegnato automaticamente."
+          big={`${EXAM_DURATION_MIN}'`}
+          unit="minuti"
+          body="Timer sempre visibile. Allo zero il quiz viene consegnato automaticamente."
         />
         <Box
-          title={`Soglia ${EXAM_PASS_THRESHOLD}/100`}
+          big={`${EXAM_PASS_THRESHOLD}`}
+          unit="/100 soglia"
           body="Punteggio normalizzato. Promosso se ≥ soglia, non promosso altrimenti."
         />
       </section>
 
-      <section className="card">
-        <h3 className="text-base font-semibold text-slate-900">
-          Distribuzione per macro-categoria
-        </h3>
-        <ul className="mt-3 space-y-2">
+      <section className="section-rule" aria-labelledby="distribuzione">
+        <p className="eyebrow">Distribuzione 24 / 19 / 6 / 6 / 5</p>
+        <h2 id="distribuzione" className="font-display mt-3 text-2xl text-ink">
+          Per macro-categoria
+        </h2>
+        <ul className="mt-5 divide-y divide-line-soft border-t border-line">
           {distribution.map(([cat, n]) => (
-            <li key={cat} className="flex items-center justify-between text-sm">
-              <span className="text-slate-700">
-                {CATEGORY_SHORT_LABELS[cat]}
-              </span>
-              <span className="chip">{n} domande</span>
+            <li
+              key={cat}
+              className="flex items-center justify-between gap-3 py-3 text-sm"
+            >
+              <span className="text-ink">{CATEGORY_SHORT_LABELS[cat]}</span>
+              <span className="mono tabular-nums text-muted">{n} domande</span>
             </li>
           ))}
         </ul>
       </section>
 
       {error && (
-        <div className="card border-rose-300 bg-rose-50 text-rose-800">
-          <p className="text-sm font-medium">
+        <div
+          role="alert"
+          className="border border-[var(--danger)] bg-[var(--danger-soft)] p-5 text-[var(--danger)]"
+        >
+          <p className="mono text-xs font-medium uppercase tracking-eyebrow">
             Impossibile avviare la simulazione
           </p>
-          <p className="mt-1 text-sm">{error}</p>
+          <p className="mt-2 text-sm">{error}</p>
         </div>
       )}
 
-      <div className="flex justify-center">
+      <div className="flex justify-center border-t border-line-soft pt-8">
         <button
           type="button"
-          className="btn-primary px-6 py-3 text-base"
+          className="btn btn-primary btn-lg"
           onClick={onStart}
         >
           Inizia simulazione
+          <span aria-hidden="true">→</span>
         </button>
       </div>
     </div>
   );
 }
 
-function Box({ title, body }: { title: string; body: string }) {
+function Box({ big, unit, body }: { big: string; unit: string; body: string }) {
   return (
-    <div className="card">
-      <p className="text-2xl font-bold text-slate-900">{title}</p>
-      <p className="mt-1 text-sm text-slate-600">{body}</p>
+    <div className="flex flex-col gap-3 bg-[var(--bg)] p-6 md:p-7">
+      <p className="mono text-5xl font-semibold leading-none tracking-tight text-ink md:text-6xl">
+        <span className="tabular-nums">{big}</span>
+        <span className="ml-2 align-baseline text-xs font-medium uppercase tracking-eyebrow text-muted">
+          {unit}
+        </span>
+      </p>
+      <p className="text-sm text-ink-soft">{body}</p>
     </div>
   );
 }

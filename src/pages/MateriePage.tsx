@@ -130,89 +130,112 @@ export default function MateriePage() {
   });
 
   return (
-    <article className="space-y-8">
-      <nav aria-label="Breadcrumb" className="text-sm text-slate-500">
-        <ol className="flex flex-wrap items-center gap-1">
+    <article className="flex flex-col gap-12">
+      <nav aria-label="Breadcrumb" className="text-sm">
+        <ol className="flex flex-wrap items-center gap-2 text-muted">
           <li>
-            <Link to="/" className="hover:text-slate-700 hover:underline">
+            <Link to="/" className="hover:text-accent">
               Home
             </Link>
           </li>
-          <li aria-hidden="true">›</li>
-          <li aria-current="page" className="text-slate-700">
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" className="text-ink">
             Materie esame OCF
           </li>
         </ol>
       </nav>
 
-      <header className="space-y-3">
-        <span className="chip">Programma · 5 macro-aree</span>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-          Le 5 materie dell'esame OCF (distribuzione 24/19/6/6/5)
+      <header>
+        <p className="eyebrow">Programma · 5 macro-aree</p>
+        <h1 className="display-1 mt-4">
+          Le <em>cinque materie</em> dell'esame OCF.
         </h1>
-        <p className="max-w-3xl text-slate-600">
+        <p className="mt-6 max-w-prose text-lg leading-relaxed text-ink-soft">
           L'esame OCF copre cinque macro-aree, per un totale di{" "}
-          <strong>{EXAM_TOTAL_QUESTIONS} domande</strong>. La distribuzione
-          ufficiale del numero di domande per area è la stessa usata dal nostro{" "}
-          <Link to="/exam" className="text-brand-700 underline">
+          <strong className="text-ink">{EXAM_TOTAL_QUESTIONS} domande</strong>.
+          La distribuzione ufficiale è la stessa usata dal nostro{" "}
+          <Link to="/exam" className="text-accent underline underline-offset-4">
             simulatore esame OCF
           </Link>
           . Qui sotto trovi il dettaglio dei principali argomenti coperti.
         </p>
       </header>
 
-      <section className="grid gap-4">
-        {DETAILS.map((d) => (
-          <article key={d.key} className="card">
-            <header className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="text-xl font-semibold text-slate-900">
+      <section
+        aria-label="Dettaglio materie"
+        className="flex flex-col gap-0 border-y border-line"
+      >
+        {DETAILS.map((d, idx) => (
+          <article
+            key={d.key}
+            className="grid gap-6 border-t border-line-soft py-10 first:border-t-0 md:grid-cols-12 md:gap-8"
+          >
+            <div className="md:col-span-4">
+              <p className="eyebrow">Domande nell'esame</p>
+              <p className="mono mt-4 text-6xl font-semibold leading-none tracking-tight text-ink md:text-7xl">
+                <span className="tabular-nums">{EXAM_DISTRIBUTION[d.key]}</span>
+                <span className="ml-2 align-baseline text-xs font-medium uppercase tracking-eyebrow text-muted">
+                  / {EXAM_TOTAL_QUESTIONS}
+                </span>
+              </p>
+              <p className="mt-3 text-sm text-muted">
+                {CATEGORY_SHORT_LABELS[d.key]}
+              </p>
+            </div>
+            <div className="md:col-span-8">
+              <h2 className="font-display text-2xl font-medium leading-tight text-ink md:text-3xl">
                 {CATEGORY_LABELS[d.key]}
               </h2>
-              <span className="chip">
-                {EXAM_DISTRIBUTION[d.key]} / {EXAM_TOTAL_QUESTIONS} domande
-              </span>
-            </header>
-            <p className="mt-2 text-slate-700">{d.summary}</p>
-            <h3 className="mt-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
-              Principali argomenti
-            </h3>
-            <ul className="mt-2 grid list-disc gap-1 pl-6 text-sm text-slate-700 md:grid-cols-2">
-              {d.topics.map((t) => (
-                <li key={t}>{t}</li>
-              ))}
-            </ul>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Link to={`/practice/${d.key}`} className="btn-primary">
-                Pratica {CATEGORY_SHORT_LABELS[d.key]} →
-              </Link>
-              <Link to="/exam" className="btn-secondary">
-                Simulazione completa
-              </Link>
+              <p className="mt-3 text-ink-soft">{d.summary}</p>
+              <h3 className="mono mt-6 text-xs font-medium uppercase tracking-eyebrow text-muted">
+                Principali argomenti
+              </h3>
+              <ul className="mt-2 grid list-none gap-x-6 gap-y-1 text-sm text-ink-soft md:grid-cols-2">
+                {d.topics.map((t) => (
+                  <li key={t} className="flex items-baseline gap-2">
+                    <span className="text-accent" aria-hidden="true">
+                      ·
+                    </span>
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-6 flex flex-wrap gap-2">
+                <Link to={`/practice/${d.key}`} className="btn btn-primary">
+                  Pratica {CATEGORY_SHORT_LABELS[d.key]}
+                  <span aria-hidden="true">→</span>
+                </Link>
+                <Link to="/exam" className="btn btn-secondary">
+                  Simulazione completa
+                </Link>
+              </div>
             </div>
           </article>
         ))}
       </section>
 
-      <section className="card border-brand-200 bg-brand-50/50">
-        <h2 className="text-xl font-semibold text-slate-900">
-          Come ti aiuta il simulatore
+      <section className="card flex flex-col gap-3 border-ink bg-[var(--bg-paper)]">
+        <p className="eyebrow">Come ti aiuta il simulatore</p>
+        <h2 className="font-display text-2xl font-medium leading-tight text-ink">
+          Distribuzione ufficiale, ripasso mirato.
         </h2>
-        <p className="mt-1 text-slate-700">
+        <p className="text-ink-soft">
           Le 60 domande della simulazione esame vengono estratte rispettando
           esattamente la distribuzione 24/19/6/6/5. In pratica per categoria,
           invece, puoi scegliere quante domande affrontare (10/20/30/50/tutte),
           attivare o disattivare il timer e concentrarti su una sola area alla
           volta.
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <Link to="/guida-esame-ocf" className="btn-secondary">
-            📘 Vai alla guida
+        <div className="mt-2 flex flex-wrap gap-2">
+          <Link to="/practice" className="btn btn-primary">
+            Inizia pratica
+            <span aria-hidden="true">→</span>
           </Link>
-          <Link to="/faq-esame-ocf" className="btn-secondary">
-            ❓ Leggi le FAQ
+          <Link to="/guida-esame-ocf" className="btn btn-secondary">
+            Vai alla guida
           </Link>
-          <Link to="/practice" className="btn-primary">
-            📚 Inizia pratica
+          <Link to="/faq-esame-ocf" className="btn btn-ghost">
+            Leggi le FAQ
           </Link>
         </div>
       </section>

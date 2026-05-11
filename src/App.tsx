@@ -74,6 +74,10 @@ export default function App() {
 
 function PageFallback() {
   return (
-    <div className="py-12 text-center text-sm text-slate-500">Caricamento…</div>
+    <div className="py-16 text-center" aria-busy="true">
+      <p className="mono text-xs uppercase tracking-eyebrow text-muted">
+        Caricamento…
+      </p>
+    </div>
   );
 }

@@ -128,15 +128,30 @@ export default function PracticeRunPage() {
 
   if (err) {
     return (
-      <div className="card border-rose-300 bg-rose-50 text-rose-800">
-        <p className="font-medium">Impossibile avviare la pratica</p>
-        <p className="mt-1 text-sm">{err}</p>
+      <div
+        role="alert"
+        className="border border-[var(--danger)] bg-[var(--danger-soft)] p-5 text-[var(--danger)]"
+      >
+        <p className="mono text-xs font-medium uppercase tracking-eyebrow">
+          Impossibile avviare la pratica
+        </p>
+        <p className="mt-2 text-sm">{err}</p>
       </div>
     );
   }
 
   if (phase === "loading" || !session) {
-    return <div className="card text-slate-600">Sto caricando le domande…</div>;
+    return (
+      <div
+        className="card flex items-center gap-3 text-ink-soft"
+        aria-busy="true"
+      >
+        <span className="mono text-xs uppercase tracking-eyebrow text-muted">
+          Caricamento
+        </span>
+        <span>Sto caricando le domande…</span>
+      </div>
+    );
   }
 
   if (phase === "result" && result) {

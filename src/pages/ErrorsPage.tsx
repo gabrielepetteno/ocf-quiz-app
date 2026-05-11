@@ -99,28 +99,30 @@ export default function ErrorsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex flex-col gap-10">
+      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Ripasso errori</h1>
-          <p className="mt-1 text-slate-600">
+          <p className="eyebrow">Ripasso mirato</p>
+          <h1 className="display-2 mt-3">Sbagli che diventano lezioni.</h1>
+          <p className="mt-3 max-w-prose text-ink-soft">
             {errors.length === 0
-              ? "Non hai ancora errori da ripassare."
+              ? "Non hai ancora errori da ripassare. Falli, e ricomparrai qui."
               : `${errors.length} domande nel registro · una domanda è 'risolta' dopo ${ERROR_RESOLVE_THRESHOLD} risposte corrette consecutive.`}
           </p>
         </div>
 
         {errors.length > 0 && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              className="btn-primary"
+              className="btn btn-primary"
               onClick={startReview}
               disabled={filtered.length === 0}
             >
               Rifai {filtered.length > 0 ? filtered.length : ""} domande
+              <span aria-hidden="true">→</span>
             </button>
-            <button type="button" className="btn-secondary" onClick={reset}>
+            <button type="button" className="btn btn-secondary" onClick={reset}>
               Svuota registro
             </button>
           </div>
@@ -167,56 +169,55 @@ export default function ErrorsPage() {
 
       {/* Lista */}
       {errors.length === 0 ? (
-        <div className="card text-center text-slate-600">
-          <p>
-            Una volta che farai dei quiz, le domande sbagliate finiranno qui.
+        <div className="card flex flex-col items-center gap-4 py-12 text-center">
+          <p className="font-display text-xl text-ink">Il registro è vuoto.</p>
+          <p className="max-w-prose text-sm text-ink-soft">
+            Una volta fatti dei quiz, le domande sbagliate verranno raccolte qui
+            per il ripasso mirato.
           </p>
-          <Link to="/practice" className="btn-primary mt-4 inline-flex">
+          <Link to="/practice" className="btn btn-primary mt-2">
             Inizia una pratica
+            <span aria-hidden="true">→</span>
           </Link>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="card text-slate-600">
+        <div className="card text-ink-soft">
           Nessuna domanda corrisponde a questo filtro.
         </div>
       ) : (
-        <ul className="space-y-2">
+        <ul className="divide-y divide-line-soft border-y border-line">
           {filtered.map((e) => (
             <li
               key={e.questionId}
-              className="card flex items-start justify-between gap-3"
+              className="flex items-start justify-between gap-3 py-4"
             >
-              <div>
-                <p className="text-xs uppercase tracking-wide text-slate-500">
+              <div className="min-w-0">
+                <p className="mono text-[0.7rem] uppercase tracking-eyebrow text-muted">
                   {CATEGORY_LABELS[e.category]} · {e.topic}
                 </p>
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-sm">
-                  <span className="chip bg-rose-50 text-rose-700 border-rose-200">
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                  <span className="chip chip-danger">
                     {e.wrongCount} sbagli
                   </span>
                   {e.correctCount > 0 && (
-                    <span className="chip bg-emerald-50 text-emerald-700 border-emerald-200">
+                    <span className="chip chip-success">
                       {e.correctCount} corrette
                     </span>
                   )}
                   {e.flagged && (
-                    <span className="chip bg-amber-50 text-amber-700 border-amber-200">
-                      ★ Da rivedere
-                    </span>
+                    <span className="chip chip-warn">★ Da rivedere</span>
                   )}
                   {e.resolved && (
-                    <span className="chip bg-emerald-50 text-emerald-700 border-emerald-200">
-                      ✓ Risolta
-                    </span>
+                    <span className="chip chip-success">✓ Risolta</span>
                   )}
-                  <span className="text-xs text-slate-400">
-                    Ultima volta: {formatDateTime(e.lastSeenAt)}
+                  <span className="mono text-[0.7rem] uppercase tracking-eyebrow text-muted">
+                    {formatDateTime(e.lastSeenAt)}
                   </span>
                 </div>
               </div>
               <button
                 type="button"
-                className="btn-ghost text-slate-500"
+                className="btn btn-ghost shrink-0"
                 onClick={() => dropOne(e.questionId)}
                 aria-label="Rimuovi dal registro"
                 title="Rimuovi dal registro"
@@ -244,10 +245,11 @@ function FilterPill({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={on}
       className={
         on
-          ? "rounded-full bg-brand-600 text-white px-3 py-1 text-xs font-medium"
-          : "rounded-full bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 px-3 py-1 text-xs font-medium"
+          ? "mono rounded-full bg-ink px-3 py-1.5 text-[0.7rem] font-medium uppercase tracking-eyebrow text-[var(--bg)]"
+          : "mono rounded-full border border-line-paper bg-[var(--bg)] px-3 py-1.5 text-[0.7rem] font-medium uppercase tracking-eyebrow text-ink-soft hover:border-ink hover:text-ink"
       }
     >
       {children}

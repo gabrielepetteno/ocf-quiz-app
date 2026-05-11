@@ -1,7 +1,7 @@
 /**
  * Timer per la simulazione esame.
  * Conta alla rovescia da `durationSec` e chiama `onTimeUp` allo zero.
- * Mostra in giallo gli ultimi 10 minuti, in rosso negli ultimi 2.
+ * Toni: paper (>10min) → warn (≤10min) → danger (≤2min).
  */
 import { useEffect, useState } from "react";
 import { formatDuration } from "@/lib/format";
@@ -26,8 +26,6 @@ export default function Timer({ durationSec, startedAt, onTimeUp }: Props) {
   const elapsedSec = Math.floor((now - startedAt) / 1000);
   const remaining = Math.max(0, durationSec - elapsedSec);
 
-  // Effetto: chiama onTimeUp quando finisce. Usiamo un effect separato per
-  // avere una unica chiamata per fine timer.
   useEffect(() => {
     if (remaining <= 0) onTimeUp();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,18 +33,22 @@ export default function Timer({ durationSec, startedAt, onTimeUp }: Props) {
 
   const tone =
     remaining <= 120
-      ? "bg-rose-100 text-rose-800 border-rose-300"
+      ? "border-[var(--danger)] bg-[var(--danger-soft)] text-[var(--danger)]"
       : remaining <= 600
-        ? "bg-amber-100 text-amber-800 border-amber-300"
-        : "bg-slate-100 text-slate-800 border-slate-300";
+        ? "border-[var(--warn)] bg-[var(--warn-soft)] text-[var(--warn)]"
+        : "border-[var(--line-paper)] bg-[var(--bg-paper)] text-ink";
+
+  const pulse = remaining <= 120 && remaining > 0 ? "animate-pulse" : "";
 
   return (
     <span
       role="timer"
       aria-live="polite"
-      className={`inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-sm tabular-nums ${tone}`}
+      aria-label={`Tempo rimanente: ${formatDuration(remaining)}`}
+      className={`mono inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium tabular-nums ${tone} ${pulse}`}
     >
-      ⏱ {formatDuration(remaining)}
+      <span aria-hidden="true">◷</span>
+      {formatDuration(remaining)}
     </span>
   );
 }
