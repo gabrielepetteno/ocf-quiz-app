@@ -93,7 +93,7 @@ export default {
           "sans-serif",
         ],
         mono: [
-          '"IBM Plex Mono"',
+          '"JetBrains Mono"',
           "ui-monospace",
           "SFMono-Regular",
           "Menlo",

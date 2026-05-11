@@ -72,6 +72,17 @@ export function clearHistory(): void {
   writeJSON(KEY_HISTORY, []);
 }
 
+/**
+ * Rimuove una singola sessione dallo storico, identificata dal suo sessionId.
+ * Ritorna lo storico aggiornato. Usata dalla pagina /history quando l'utente
+ * vuole cancellare una sola sessione senza svuotare tutto.
+ */
+export function removeHistoryEntry(sessionId: string): SessionResult[] {
+  const history = getHistory().filter((h) => h.sessionId !== sessionId);
+  writeJSON(KEY_HISTORY, history);
+  return history;
+}
+
 /* ----------------------------- errors ------------------------------------- */
 
 /**

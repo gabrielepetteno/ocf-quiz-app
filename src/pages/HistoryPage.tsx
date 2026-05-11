@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { CATEGORY_SHORT_LABELS, EXAM_PASS_THRESHOLD } from "@/lib/config";
-import { clearHistory, getHistory } from "@/lib/storage";
+import { clearHistory, getHistory, removeHistoryEntry } from "@/lib/storage";
 import { computeStats } from "@/lib/stats";
 import { formatDateTime, formatDuration, formatPercent } from "@/lib/format";
 import type { SessionResult } from "@/lib/types";
@@ -49,6 +49,17 @@ export default function HistoryPage() {
     }
   }
 
+  function removeOne(sessionId: string, label: string) {
+    if (
+      confirm(
+        `Eliminare la sessione "${label}"? L'azione non può essere annullata.`,
+      )
+    ) {
+      const next = removeHistoryEntry(sessionId);
+      setHistory(next);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-10">
       <header className="flex flex-wrap items-end justify-between gap-4 border-b border-ink pb-6">
@@ -56,8 +67,8 @@ export default function HistoryPage() {
           <p className="eyebrow">Le tue sessioni</p>
           <h1 className="display-2 mt-3">A che punto sei.</h1>
           <p className="mt-3 max-w-prose text-ink-soft">
-            Tutte le sessioni completate, salvate sul tuo dispositivo. Niente
-            sale sui nostri server.
+            Tutte le sessioni completate, salvate <strong>localmente</strong>{" "}
+            nel tuo browser. Niente sale sui nostri server.
           </p>
         </div>
         {history.length > 0 && (
@@ -66,6 +77,79 @@ export default function HistoryPage() {
           </button>
         )}
       </header>
+
+      {/* ── Pannello: come funziona il salvataggio ─────────────────── */}
+      <aside
+        aria-labelledby="storage-info"
+        className="grid gap-5 border-l-2 border-accent bg-paper p-5 md:grid-cols-3"
+      >
+        <div className="md:col-span-1">
+          <p className="eyebrow">Come funziona il salvataggio</p>
+          <h2
+            id="storage-info"
+            className="font-display mt-2 text-lg font-semibold text-ink"
+          >
+            Dati 100% nel tuo browser.
+          </h2>
+        </div>
+        <ul className="grid gap-3 text-sm text-ink-soft md:col-span-2 md:grid-cols-2">
+          <li className="flex gap-2">
+            <Dot />
+            <span>
+              I risultati di ogni quiz sono salvati nel{" "}
+              <code className="rounded bg-white px-1 py-0.5 text-ink">
+                localStorage
+              </code>{" "}
+              del browser (chiave{" "}
+              <code className="rounded bg-white px-1 py-0.5 text-ink">
+                ocfquiz.history.v1
+              </code>
+              ).
+            </span>
+          </li>
+          <li className="flex gap-2">
+            <Dot />
+            <span>
+              <strong className="text-ink">Nessun account</strong>, nessun
+              server, nessun tracciamento: la pagina non invia dati al di fuori
+              del tuo dispositivo.
+            </span>
+          </li>
+          <li className="flex gap-2">
+            <Dot />
+            <span>
+              I dati restano{" "}
+              <strong className="text-ink">su questo browser</strong>: non si
+              sincronizzano tra dispositivi diversi (es. PC ↔ telefono) né tra
+              browser diversi (es. Chrome ↔ Safari).
+            </span>
+          </li>
+          <li className="flex gap-2">
+            <Dot />
+            <span>
+              Se cancelli i dati del sito dalle impostazioni del browser, o usi
+              la <strong className="text-ink">modalità in incognito</strong>, lo
+              storico viene perso.
+            </span>
+          </li>
+          <li className="flex gap-2">
+            <Dot />
+            <span>
+              Salviamo solo le{" "}
+              <strong className="text-ink">ultime 50 sessioni</strong> per non
+              gonfiare lo spazio del browser.
+            </span>
+          </li>
+          <li className="flex gap-2">
+            <Dot />
+            <span>
+              Puoi <strong className="text-ink">eliminare</strong> una singola
+              sessione con l'icona <span aria-hidden="true">🗑</span> a fine
+              riga, o tutto lo storico col bottone <em>Svuota storico</em>.
+            </span>
+          </li>
+        </ul>
+      </aside>
 
       {history.length === 0 ? (
         <div className="card flex flex-col items-center gap-4 py-12 text-center">
@@ -130,49 +214,85 @@ export default function HistoryPage() {
                   <th className="mono px-2 py-3 text-right text-[0.7rem] font-medium uppercase tracking-eyebrow text-muted">
                     Esito
                   </th>
+                  <th className="px-2 py-3">
+                    <span className="sr-only">Azioni</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {history.map((h) => (
-                  <tr
-                    key={h.sessionId}
-                    className="border-b border-line-soft last:border-0"
-                  >
-                    <td className="px-2 py-3 text-ink">
-                      {formatDateTime(h.startedAt)}
-                    </td>
-                    <td className="px-2 py-3 text-ink">
-                      {MODE_LABELS[h.mode]}
-                      {h.category && (
-                        <span className="ml-1 text-muted">
-                          · {CATEGORY_SHORT_LABELS[h.category]}
-                        </span>
-                      )}
-                    </td>
-                    <td className="mono px-2 py-3 text-right text-ink tabular-nums">
-                      {h.scaledScore}/100
-                    </td>
-                    <td className="mono px-2 py-3 text-right text-ink tabular-nums">
-                      {h.correctCount}/{h.totalQuestions}
-                    </td>
-                    <td className="mono px-2 py-3 text-right tabular-nums text-muted">
-                      {formatDuration(h.elapsedSec)}
-                    </td>
-                    <td className="px-2 py-3 text-right">
-                      {h.mode === "exam" ? (
-                        <span
-                          className={
-                            h.passed ? "chip chip-success" : "chip chip-danger"
-                          }
+                {history.map((h) => {
+                  const label = `${MODE_LABELS[h.mode]}${
+                    h.category ? " · " + CATEGORY_SHORT_LABELS[h.category] : ""
+                  } del ${formatDateTime(h.startedAt)}`;
+                  return (
+                    <tr
+                      key={h.sessionId}
+                      className="group border-b border-line-soft last:border-0"
+                    >
+                      <td className="px-2 py-3 text-ink">
+                        {formatDateTime(h.startedAt)}
+                      </td>
+                      <td className="px-2 py-3 text-ink">
+                        {MODE_LABELS[h.mode]}
+                        {h.category && (
+                          <span className="ml-1 text-muted">
+                            · {CATEGORY_SHORT_LABELS[h.category]}
+                          </span>
+                        )}
+                      </td>
+                      <td className="mono px-2 py-3 text-right text-ink tabular-nums">
+                        {h.scaledScore}/100
+                      </td>
+                      <td className="mono px-2 py-3 text-right text-ink tabular-nums">
+                        {h.correctCount}/{h.totalQuestions}
+                      </td>
+                      <td className="mono px-2 py-3 text-right tabular-nums text-muted">
+                        {formatDuration(h.elapsedSec)}
+                      </td>
+                      <td className="px-2 py-3 text-right">
+                        {h.mode === "exam" ? (
+                          <span
+                            className={
+                              h.passed
+                                ? "chip chip-success"
+                                : "chip chip-danger"
+                            }
+                          >
+                            {h.passed ? "Promosso" : "Non promosso"}
+                          </span>
+                        ) : (
+                          <span className="text-muted">—</span>
+                        )}
+                      </td>
+                      <td className="px-2 py-3 text-right">
+                        <button
+                          type="button"
+                          onClick={() => removeOne(h.sessionId, label)}
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-line-soft text-muted transition-colors hover:border-[var(--danger)] hover:bg-[var(--danger-soft)] hover:text-[var(--danger)]"
+                          aria-label={`Elimina sessione ${label}`}
+                          title="Elimina questa sessione"
                         >
-                          {h.passed ? "Promosso" : "Non promosso"}
-                        </span>
-                      ) : (
-                        <span className="text-muted">—</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6M14 11v6" />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </section>
@@ -222,6 +342,15 @@ export default function HistoryPage() {
         </>
       )}
     </div>
+  );
+}
+
+function Dot() {
+  return (
+    <span
+      aria-hidden="true"
+      className="mt-2 inline-block h-1 w-1 shrink-0 rounded-full bg-accent"
+    />
   );
 }
 
