@@ -117,8 +117,9 @@ export default function QuizPlayer({
           </h2>
 
           <ul className="mt-5 space-y-2">
-            {current.displayAnswers.map((a) => {
+            {current.displayAnswers.map((a, idx) => {
               const isSelected = currentState.selectedAnswerId === a.id;
+              const displayLabel = String.fromCharCode(65 + idx);
               return (
                 <li key={a.id}>
                   <button
@@ -129,7 +130,7 @@ export default function QuizPlayer({
                     onClick={() => selectAnswer(a.id)}
                   >
                     <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-current text-xs font-semibold">
-                      {a.id}
+                      {displayLabel}
                     </span>
                     <span className="flex-1">{a.text}</span>
                   </button>
