@@ -1,0 +1,32 @@
+# OCF Quiz · robots.txt
+# Sito: https://gabrielepetteno.github.io/ocf-quiz-app/
+# Tutto pubblico, niente di privato: invitiamo i crawler a indicizzare tutto.
+
+User-agent: *
+Allow: /
+
+# Specifiche per i bot AI: permettiamo l'indicizzazione (il sito è didattico,
+# open-source, e vivere nelle SERP/AI è esattamente l'obiettivo).
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Sitemap canonica
+Sitemap: https://gabrielepetteno.github.io/ocf-quiz-app/sitemap.xml

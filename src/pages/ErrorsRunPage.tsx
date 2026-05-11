@@ -23,6 +23,7 @@ import type {
 } from "@/lib/types";
 import { generateId } from "@/lib/utils";
 import { shuffle } from "@/lib/shuffle";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
 
 type Phase = "loading" | "playing" | "result" | "empty";
 
@@ -34,6 +35,13 @@ export default function ErrorsRunPage() {
   const [session, setSession] = useState<QuizSession | null>(null);
   const [states, setStates] = useState<QuestionState[]>([]);
   const [result, setResult] = useState<SessionResult | null>(null);
+
+  useDocumentMeta({
+    slug: "errors/run",
+    title: "Ripasso errori in corso · OCF Quiz",
+    description: "Esecuzione del ripasso errori sull'esame OCF.",
+    indexable: false,
+  });
 
   useEffect(() => {
     if (ids.length === 0) {

@@ -20,6 +20,7 @@ import type {
   SessionResult,
 } from "@/lib/types";
 import { generateId } from "@/lib/utils";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
 
 const VALID_CATS: CategoryKey[] = [
   "diritto_mercato_intermediari",
@@ -38,6 +39,16 @@ export default function PracticeRunPage() {
 
   const [phase, setPhase] = useState<Phase>("loading");
   const [session, setSession] = useState<QuizSession | null>(null);
+
+  useDocumentMeta({
+    slug: `practice/${cat ?? ""}`,
+    title: cat
+      ? `Pratica ${CATEGORY_LABELS[cat] ?? ""} · OCF Quiz`
+      : "Pratica · OCF Quiz",
+    description:
+      "Esecuzione della pratica per categoria sull'esame OCF: rispondi alle domande, ricevi il punteggio e ripassa gli errori.",
+    indexable: false,
+  });
   const [states, setStates] = useState<QuestionState[]>([]);
   const [result, setResult] = useState<SessionResult | null>(null);
   const [err, setErr] = useState<string | null>(null);

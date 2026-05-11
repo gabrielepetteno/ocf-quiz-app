@@ -12,6 +12,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { CATEGORY_LABELS, PRACTICE_SIZE_OPTIONS } from "@/lib/config";
 import { loadQuestions } from "@/lib/questions";
 import type { CategoryKey, CategoryMeta } from "@/lib/types";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
+import { breadcrumbJsonLd, getPageSeo } from "@/lib/seo";
 
 export default function PracticePage() {
   const nav = useNavigate();
@@ -19,6 +21,15 @@ export default function PracticePage() {
   const [chosen, setChosen] = useState<CategoryKey | null>(null);
   const [count, setCount] = useState<number | "all">(20);
   const [timerMin, setTimerMin] = useState<number>(0); // 0 = nessun timer
+
+  const seo = getPageSeo("practice")!;
+  useDocumentMeta({
+    slug: seo.slug,
+    title: seo.title,
+    description: seo.description,
+    keywords: seo.keywords,
+    jsonLd: [breadcrumbJsonLd("practice", "Pratica per categoria")],
+  });
 
   useEffect(() => {
     loadQuestions().then((b) => setCategories(b.categories));

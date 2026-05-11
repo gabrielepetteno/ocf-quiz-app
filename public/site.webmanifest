@@ -1,0 +1,52 @@
+{
+  "name": "OCF Quiz · Simulatore Esame Consulenti Finanziari",
+  "short_name": "OCF Quiz",
+  "description": "Simulatore gratuito e open source dell'esame OCF per l'iscrizione all'Albo unico dei Consulenti Finanziari. 60 domande in 85 minuti, oltre 4.900 quesiti, statistiche e ripasso degli errori.",
+  "id": "/ocf-quiz-app/",
+  "start_url": "/ocf-quiz-app/",
+  "scope": "/ocf-quiz-app/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#1d4ed8",
+  "background_color": "#f8fafc",
+  "lang": "it-IT",
+  "dir": "ltr",
+  "categories": ["education", "productivity", "finance"],
+  "icons": [
+    {
+      "src": "/ocf-quiz-app/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/ocf-quiz-app/apple-touch-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "180x180",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Simulazione esame",
+      "short_name": "Simulazione",
+      "description": "Avvia una simulazione esame OCF da 60 domande in 85 minuti",
+      "url": "/ocf-quiz-app/exam",
+      "icons": [{ "src": "/ocf-quiz-app/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Pratica per categoria",
+      "short_name": "Pratica",
+      "description": "Allenati su una macro-categoria specifica",
+      "url": "/ocf-quiz-app/practice",
+      "icons": [{ "src": "/ocf-quiz-app/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Ripassa errori",
+      "short_name": "Errori",
+      "description": "Ripassa solo le domande sbagliate",
+      "url": "/ocf-quiz-app/errors",
+      "icons": [{ "src": "/ocf-quiz-app/favicon.svg", "sizes": "any" }]
+    }
+  ]
+}

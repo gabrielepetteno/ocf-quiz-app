@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>OCF Quiz · Reindirizzamento</title>
+    <!--
+      GitHub Pages SPA fallback ("Single Page Apps for GitHub Pages" trick).
+      Quando l'utente apre direttamente https://.../ocf-quiz-app/exam,
+      GitHub Pages cerca il file fisico, non lo trova e serve questo 404.html.
+      Lo script qui sotto codifica il path richiesto in una query string e
+      rimanda alla root dell'app; index.html lo riapplica con history.replaceState.
+    -->
+    <script>
+      (function () {
+        var segmentCount = 1; // numero di segmenti del repo, es. /ocf-quiz-app/ → 1
+        var l = window.location;
+        var path =
+          l.pathname
+            .split("/")
+            .slice(0, 1 + segmentCount)
+            .join("/") +
+          "/?/" +
+          l.pathname
+            .slice(1)
+            .split("/")
+            .slice(segmentCount)
+            .join("/")
+            .replace(/&/g, "~and~") +
+          (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+          l.hash;
+        l.replace(l.origin + path);
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <p>
+        Pagina non trovata. Torna alla
+        <a href="/ocf-quiz-app/">home di OCF Quiz</a>.
+      </p>
+    </noscript>
+  </body>
+</html>

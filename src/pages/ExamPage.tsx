@@ -20,6 +20,8 @@ import {
   EXAM_DISTRIBUTION,
   CATEGORY_SHORT_LABELS,
 } from "@/lib/config";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
+import { breadcrumbJsonLd, getPageSeo } from "@/lib/seo";
 import {
   generateExamQuestions,
   InsufficientQuestionsError,
@@ -42,6 +44,19 @@ export default function ExamPage() {
   const [session, setSession] = useState<QuizSession | null>(null);
   const [states, setStates] = useState<QuestionState[]>([]);
   const [result, setResult] = useState<SessionResult | null>(null);
+
+  const seo = getPageSeo("exam")!;
+  useDocumentMeta({
+    slug: seo.slug,
+    title: seo.title,
+    description: seo.description,
+    keywords: seo.keywords,
+    // Quando l'utente è dentro la simulazione (phase != intro) marchiamo
+    // noindex: non vogliamo che Google indicizzi gli stati transitori del
+    // quiz, solo la pagina pubblica di introduzione.
+    indexable: phase === "intro",
+    jsonLd: [breadcrumbJsonLd("exam", "Simulazione esame OCF")],
+  });
 
   /** Avvia una nuova simulazione: genera le 60 domande e parte il timer. */
   async function startExam() {

@@ -1,0 +1,15 @@
+/* TEAM */
+Maintainer: Gabriele Petteno
+Contact: https://github.com/gabrielepetteno
+GitHub: https://github.com/gabrielepetteno/ocf-quiz-app
+
+/* SITE */
+Last update: 2026-05-11
+Standards: HTML5, CSS3, JavaScript (ES2022)
+Components: React 18, React Router 6, Vite 6, TypeScript 5, Tailwind CSS 3
+Source code: https://github.com/gabrielepetteno/ocf-quiz-app
+License: MIT (questions belong to OCF)
+Language: Italian
+
+/* THANKS */
+OCF — Organismo di vigilanza e tenuta dell'Albo unico dei Consulenti Finanziari

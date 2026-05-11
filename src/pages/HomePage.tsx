@@ -22,12 +22,23 @@ import {
 } from "@/lib/config";
 import type { CategoryMeta } from "@/lib/types";
 import { formatPercent } from "@/lib/format";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
+import { breadcrumbJsonLd, getPageSeo } from "@/lib/seo";
 
 export default function HomePage() {
   const [stats, setStats] = useState<UserStats | null>(null);
   const [errorsCount, setErrorsCount] = useState(0);
   const [categories, setCategories] = useState<CategoryMeta[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
+
+  const seo = getPageSeo("")!;
+  useDocumentMeta({
+    slug: seo.slug,
+    title: seo.title,
+    description: seo.description,
+    keywords: seo.keywords,
+    jsonLd: [breadcrumbJsonLd("", "Home")],
+  });
 
   useEffect(() => {
     setStats(computeStats(getHistory()));
@@ -215,6 +226,94 @@ export default function HomePage() {
             ): non vengono inventate, mantengono categoria e peso originali.
           </li>
         </ul>
+      </section>
+
+      {/* APPROFONDIMENTI SEO -------------------------------------------- */}
+      <section aria-labelledby="risorse-ocf">
+        <h2
+          id="risorse-ocf"
+          className="mb-3 text-xl font-semibold text-slate-900"
+        >
+          Approfondimenti sull'esame OCF
+        </h2>
+        <div className="grid gap-3 md:grid-cols-3">
+          <Link
+            to="/guida-esame-ocf"
+            className="card group transition hover:border-brand-300"
+          >
+            <p className="text-2xl">📘</p>
+            <h3 className="mt-1 text-base font-semibold text-slate-900 group-hover:text-brand-800">
+              Guida esame OCF
+            </h3>
+            <p className="mt-1 text-sm text-slate-600">
+              Cos'è l'esame OCF, requisiti, struttura, durata e soglia di
+              superamento. Tutto quello che serve sapere per partire.
+            </p>
+          </Link>
+          <Link
+            to="/materie-esame-ocf"
+            className="card group transition hover:border-brand-300"
+          >
+            <p className="text-2xl">🗂️</p>
+            <h3 className="mt-1 text-base font-semibold text-slate-900 group-hover:text-brand-800">
+              Le 5 materie
+            </h3>
+            <p className="mt-1 text-sm text-slate-600">
+              Distribuzione 24/19/6/6/5 e dettaglio degli argomenti per ogni
+              macro-categoria del programma OCF.
+            </p>
+          </Link>
+          <Link
+            to="/faq-esame-ocf"
+            className="card group transition hover:border-brand-300"
+          >
+            <p className="text-2xl">❓</p>
+            <h3 className="mt-1 text-base font-semibold text-slate-900 group-hover:text-brand-800">
+              FAQ esame OCF
+            </h3>
+            <p className="mt-1 text-sm text-slate-600">
+              Risposte rapide alle domande più frequenti: durata, soglia, costi,
+              tentativi, banca dati.
+            </p>
+          </Link>
+        </div>
+      </section>
+
+      {/* SEO BODY (sintesi descrittiva indicizzabile) ------------------- */}
+      <section aria-labelledby="cos-e" className="prose-slate max-w-none">
+        <h2 id="cos-e" className="mb-2 text-xl font-semibold text-slate-900">
+          Cos'è il simulatore OCF Quiz
+        </h2>
+        <p className="text-slate-700">
+          <strong>OCF Quiz</strong> è un simulatore gratuito e open source dell'
+          <strong>esame OCF</strong> per l'iscrizione all'
+          <strong>Albo unico dei Consulenti Finanziari</strong>. Riproduce
+          fedelmente le regole della prova ufficiale:{" "}
+          <strong>60 domande</strong> a risposta multipla in{" "}
+          <strong>85 minuti</strong>, con la{" "}
+          <strong>distribuzione 24/19/6/6/5</strong> tra le cinque macro-aree e
+          soglia di superamento <strong>80/100</strong>. La banca dati conta
+          oltre <strong>4.900 quesiti</strong> importati dal materiale OCF.
+        </p>
+        <p className="mt-3 text-slate-700">
+          L'app è pensata per chi si prepara all'esame come{" "}
+          <strong>
+            consulente finanziario abilitato all'offerta fuori sede
+          </strong>
+          , <strong>consulente finanziario autonomo</strong> o{" "}
+          <strong>società di consulenza finanziaria (SCF)</strong>. Puoi
+          alternare{" "}
+          <Link to="/exam" className="text-brand-700 underline">
+            simulazioni a tempo
+          </Link>{" "}
+          e{" "}
+          <Link to="/practice" className="text-brand-700 underline">
+            pratica per categoria
+          </Link>
+          , ripassare le domande sbagliate e monitorare l'andamento del
+          punteggio nel tempo. Nessuna registrazione, nessun tracciamento, tutto
+          in locale.
+        </p>
       </section>
     </div>
   );

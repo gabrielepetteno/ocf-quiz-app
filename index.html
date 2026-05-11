@@ -2,20 +2,325 @@
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <meta name="theme-color" content="#1d4ed8" />
+    <meta name="color-scheme" content="light" />
+
+    <!-- Core SEO ------------------------------------------------------- -->
+    <title>
+      OCF Quiz · Simulatore Esame Consulenti Finanziari 2026 (gratis)
+    </title>
     <meta
       name="description"
-      content="Simulatore gratuito e open source dell'esame OCF per l'iscrizione all'Albo unico dei Consulenti Finanziari. 60 domande in 85 minuti, oltre 4.900 quiz ufficiali, statistiche e ripasso degli errori."
+      content="Simulatore gratuito e open source dell'esame OCF 2026 per l'iscrizione all'Albo unico dei Consulenti Finanziari. 60 domande in 85 minuti, oltre 4.900 quesiti ufficiali, soglia 80/100, statistiche e ripasso degli errori. Senza registrazione, senza tracciamento."
     />
-    <title>OCF Quiz · Simulatore Esame Consulenti Finanziari</title>
+    <meta
+      name="keywords"
+      content="OCF, esame OCF, simulatore OCF, quiz OCF, consulenti finanziari, albo consulenti finanziari, prova esame OCF, simulazione esame OCF, quiz consulenti finanziari, esame consulenti finanziari 2026, domande OCF, banca dati OCF, 4900 quiz OCF, preparazione esame OCF, OCF online gratis"
+    />
+    <meta name="author" content="Gabriele Petteno" />
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="rating" content="general" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="Content-Language" content="it" />
+    <meta name="geo.region" content="IT" />
+    <meta name="geo.placename" content="Italia" />
+    <meta name="language" content="Italian" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="global" />
+    <meta name="application-name" content="OCF Quiz" />
+    <meta name="apple-mobile-web-app-title" content="OCF Quiz" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-TileColor" content="#1d4ed8" />
+
+    <!-- Canonical & hreflang ------------------------------------------- -->
+    <link
+      rel="canonical"
+      href="https://gabrielepetteno.github.io/ocf-quiz-app/"
+    />
+    <link
+      rel="alternate"
+      hreflang="it"
+      href="https://gabrielepetteno.github.io/ocf-quiz-app/"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://gabrielepetteno.github.io/ocf-quiz-app/"
+    />
+
+    <!-- Icons & manifest ----------------------------------------------- -->
+    <link rel="icon" href="/ocf-quiz-app/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/ocf-quiz-app/favicon.svg" />
+    <link rel="apple-touch-icon" href="/ocf-quiz-app/apple-touch-icon.svg" />
+    <link rel="mask-icon" href="/ocf-quiz-app/favicon.svg" color="#1d4ed8" />
+    <link rel="manifest" href="/ocf-quiz-app/site.webmanifest" />
+
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp, Telegram) ------------ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="OCF Quiz" />
+    <meta property="og:locale" content="it_IT" />
+    <meta
+      property="og:title"
+      content="OCF Quiz · Simulatore Esame Consulenti Finanziari 2026"
+    />
+    <meta
+      property="og:description"
+      content="Allenati all'esame OCF con il simulatore gratuito e open source: 60 domande in 85 minuti, 4.900+ quesiti ufficiali, statistiche e ripasso errori. Senza registrazione."
+    />
+    <meta
+      property="og:url"
+      content="https://gabrielepetteno.github.io/ocf-quiz-app/"
+    />
+    <meta
+      property="og:image"
+      content="https://gabrielepetteno.github.io/ocf-quiz-app/og-image.png"
+    />
+    <meta
+      property="og:image:secure_url"
+      content="https://gabrielepetteno.github.io/ocf-quiz-app/og-image.png"
+    />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="OCF Quiz — simulatore esame consulenti finanziari"
+    />
+
+    <!-- Twitter / X ---------------------------------------------------- -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="OCF Quiz · Simulatore Esame Consulenti Finanziari"
+    />
+    <meta
+      name="twitter:description"
+      content="Simulatore gratuito dell'esame OCF: 60 domande in 85 minuti, 4.900+ quesiti, ripasso errori. Open source, senza registrazione."
+    />
+    <meta
+      name="twitter:image"
+      content="https://gabrielepetteno.github.io/ocf-quiz-app/og-image.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="OCF Quiz — simulatore esame consulenti finanziari"
+    />
+
+    <!-- Preconnect / DNS-prefetch -------------------------------------- -->
+    <link
+      rel="preconnect"
+      href="https://gabrielepetteno.github.io"
+      crossorigin
+    />
+    <link rel="dns-prefetch" href="https://gabrielepetteno.github.io" />
+
+    <!-- Preload del dataset principale (caricato dalla home subito dopo il mount) -->
+    <link
+      rel="preload"
+      as="fetch"
+      href="/ocf-quiz-app/data/questions.json"
+      crossorigin
+    />
+
+    <!-- Sitemap discovery ---------------------------------------------- -->
+    <link
+      rel="sitemap"
+      type="application/xml"
+      href="/ocf-quiz-app/sitemap.xml"
+    />
+
+    <!-- Structured Data (JSON-LD) -------------------------------------- -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://gabrielepetteno.github.io/ocf-quiz-app/#website",
+            "url": "https://gabrielepetteno.github.io/ocf-quiz-app/",
+            "name": "OCF Quiz",
+            "description": "Simulatore gratuito e open source dell'esame OCF per l'iscrizione all'Albo unico dei Consulenti Finanziari.",
+            "inLanguage": "it-IT",
+            "publisher": {
+              "@id": "https://gabrielepetteno.github.io/ocf-quiz-app/#publisher"
+            }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://gabrielepetteno.github.io/ocf-quiz-app/#publisher",
+            "name": "Gabriele Petteno",
+            "url": "https://github.com/gabrielepetteno"
+          },
+          {
+            "@type": "WebApplication",
+            "@id": "https://gabrielepetteno.github.io/ocf-quiz-app/#webapp",
+            "name": "OCF Quiz · Simulatore Esame Consulenti Finanziari",
+            "alternateName": [
+              "Simulatore OCF",
+              "Quiz OCF",
+              "Quiz Consulenti Finanziari"
+            ],
+            "url": "https://gabrielepetteno.github.io/ocf-quiz-app/",
+            "applicationCategory": "EducationalApplication",
+            "applicationSubCategory": "Quiz",
+            "operatingSystem": "Web",
+            "browserRequirements": "Requires a modern browser with JavaScript and localStorage.",
+            "inLanguage": "it-IT",
+            "isAccessibleForFree": true,
+            "softwareVersion": "0.1.0",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "EUR",
+              "availability": "https://schema.org/InStock"
+            },
+            "featureList": [
+              "Simulazione esame OCF 60 domande in 85 minuti",
+              "Distribuzione ufficiale 24/19/6/6/5 per macro-categoria",
+              "Soglia di superamento 80/100",
+              "Pratica per categoria (10/20/30/50/tutte)",
+              "Registro errori con ripasso mirato",
+              "Statistiche personali e storico sessioni",
+              "Funzionamento 100% lato client (nessun account, nessun server)"
+            ],
+            "screenshot": "https://gabrielepetteno.github.io/ocf-quiz-app/og-image.png",
+            "image": "https://gabrielepetteno.github.io/ocf-quiz-app/og-image.png",
+            "publisher": {
+              "@id": "https://gabrielepetteno.github.io/ocf-quiz-app/#publisher"
+            },
+            "audience": {
+              "@type": "EducationalAudience",
+              "educationalRole": "student"
+            },
+            "about": {
+              "@type": "Thing",
+              "name": "Esame OCF — Albo unico dei Consulenti Finanziari"
+            }
+          },
+          {
+            "@type": "Course",
+            "@id": "https://gabrielepetteno.github.io/ocf-quiz-app/#course",
+            "name": "Preparazione esame OCF — Consulenti Finanziari",
+            "description": "Percorso di preparazione gratuito all'esame OCF basato su oltre 4.900 quesiti ufficiali, con simulazioni a tempo, pratica per categoria e registro errori.",
+            "provider": {
+              "@id": "https://gabrielepetteno.github.io/ocf-quiz-app/#publisher"
+            },
+            "inLanguage": "it-IT",
+            "educationalLevel": "professional",
+            "teaches": [
+              "Diritto del mercato finanziario, intermediari e disciplina del consulente",
+              "Matematica finanziaria, economia, pianificazione e finanza comportamentale",
+              "Diritto tributario del mercato finanziario",
+              "Diritto previdenziale e assicurativo",
+              "Diritto privato e commerciale"
+            ],
+            "isAccessibleForFree": true,
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "EUR",
+              "category": "Free"
+            },
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "online",
+              "courseWorkload": "PT85M",
+              "inLanguage": "it-IT"
+            }
+          },
+          {
+            "@type": "Quiz",
+            "@id": "https://gabrielepetteno.github.io/ocf-quiz-app/#quiz",
+            "name": "Simulazione esame OCF",
+            "description": "60 domande estratte da oltre 4.900 quesiti ufficiali, distribuite 24/19/6/6/5 secondo regolamento OCF. 85 minuti, soglia 80/100.",
+            "educationalLevel": "professional",
+            "inLanguage": "it-IT",
+            "learningResourceType": "Quiz",
+            "typicalAgeRange": "18-99",
+            "isAccessibleForFree": true,
+            "about": {
+              "@type": "Thing",
+              "name": "Albo unico dei Consulenti Finanziari (OCF)"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased">
+    <!-- Fallback no-JS: aiuta i crawler che non eseguono JS e migliora l'accessibilità -->
+    <noscript>
+      <div
+        style="
+          max-width: 720px;
+          margin: 40px auto;
+          padding: 24px;
+          font-family: system-ui, sans-serif;
+          line-height: 1.5;
+        "
+      >
+        <h1 style="font-size: 1.5rem; margin: 0 0 8px">
+          OCF Quiz · Simulatore Esame Consulenti Finanziari
+        </h1>
+        <p>
+          Per usare il simulatore dell'esame <strong>OCF</strong> (Albo unico
+          dei Consulenti Finanziari) devi abilitare
+          <strong>JavaScript</strong> nel browser. L'app è gratuita, open
+          source, non richiede registrazione e funziona interamente nel tuo
+          dispositivo.
+        </p>
+        <p>
+          <strong>Cos'è l'esame OCF.</strong> È la prova valutativa, della
+          durata di <strong>85 minuti</strong> con <strong>60 domande</strong> a
+          risposta multipla, per l'iscrizione all'Albo unico dei Consulenti
+          Finanziari. La soglia di superamento è <strong>80/100</strong>. Le
+          domande sono distribuite su 5 macro-aree: diritto del mercato
+          finanziario e intermediari (24), matematica finanziaria ed economia
+          (19), diritto tributario (6), diritto previdenziale e assicurativo
+          (6), diritto privato e commerciale (5).
+        </p>
+        <p>
+          Codice sorgente:
+          <a href="https://github.com/gabrielepetteno/ocf-quiz-app"
+            >github.com/gabrielepetteno/ocf-quiz-app</a
+          >.
+        </p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- GitHub Pages SPA redirect: rispristina il path salvato da 404.html -->
+    <script>
+      (function () {
+        var l = window.location;
+        if (l.search && l.search.indexOf("?/") === 1) {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            "",
+            l.pathname.slice(0, -1) + decoded.slice(1) + l.hash,
+          );
+        }
+      })();
+    </script>
   </body>
 </html>

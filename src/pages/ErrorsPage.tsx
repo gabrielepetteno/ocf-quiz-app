@@ -16,6 +16,8 @@ import {
 import { clearErrors, getErrors, removeError } from "@/lib/storage";
 import type { CategoryKey, ErrorEntry } from "@/lib/types";
 import { formatDateTime } from "@/lib/format";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
+import { breadcrumbJsonLd, getPageSeo } from "@/lib/seo";
 
 type Filter =
   | "all"
@@ -37,6 +39,15 @@ export default function ErrorsPage() {
   const nav = useNavigate();
   const [errors, setErrors] = useState<ErrorEntry[]>([]);
   const [filter, setFilter] = useState<Filter>("unresolved");
+
+  const seo = getPageSeo("errors")!;
+  useDocumentMeta({
+    slug: seo.slug,
+    title: seo.title,
+    description: seo.description,
+    keywords: seo.keywords,
+    jsonLd: [breadcrumbJsonLd("errors", "Ripasso errori")],
+  });
 
   useEffect(() => {
     setErrors(getErrors());

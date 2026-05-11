@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Sitemap statica di OCF Quiz.
+  Viene rigenerata dallo script di prerender al build, in modo che resti
+  sempre allineata alle rotte definite in src/lib/seo.ts.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://gabrielepetteno.github.io/ocf-quiz-app/</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="it" href="https://gabrielepetteno.github.io/ocf-quiz-app/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gabrielepetteno.github.io/ocf-quiz-app/" />
+  </url>
+  <url>
+    <loc>https://gabrielepetteno.github.io/ocf-quiz-app/exam</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://gabrielepetteno.github.io/ocf-quiz-app/practice</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gabrielepetteno.github.io/ocf-quiz-app/errors</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://gabrielepetteno.github.io/ocf-quiz-app/history</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://gabrielepetteno.github.io/ocf-quiz-app/guida-esame-ocf</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://gabrielepetteno.github.io/ocf-quiz-app/faq-esame-ocf</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://gabrielepetteno.github.io/ocf-quiz-app/materie-esame-ocf</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>

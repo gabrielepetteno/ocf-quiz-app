@@ -12,6 +12,8 @@ import { clearHistory, getHistory } from "@/lib/storage";
 import { computeStats } from "@/lib/stats";
 import { formatDateTime, formatDuration, formatPercent } from "@/lib/format";
 import type { SessionResult } from "@/lib/types";
+import { useDocumentMeta } from "@/lib/useDocumentMeta";
+import { breadcrumbJsonLd, getPageSeo } from "@/lib/seo";
 
 const MODE_LABELS = {
   exam: "Simulazione",
@@ -21,6 +23,15 @@ const MODE_LABELS = {
 
 export default function HistoryPage() {
   const [history, setHistory] = useState<SessionResult[]>([]);
+
+  const seo = getPageSeo("history")!;
+  useDocumentMeta({
+    slug: seo.slug,
+    title: seo.title,
+    description: seo.description,
+    keywords: seo.keywords,
+    jsonLd: [breadcrumbJsonLd("history", "Storico simulazioni")],
+  });
 
   useEffect(() => {
     setHistory(getHistory());
